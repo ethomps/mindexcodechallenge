@@ -29,7 +29,15 @@ namespace CodeChallenge.Repositories
 
         public Employee GetById(string id)
         {
-            return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
+            // Added this Include chain to fix a bug where DirectReports were always null
+            //  due to the context getting disposed before they were serialized.
+            // Definitely not the ideal solution if this was to go into production, 
+            //  since it only covers 3 levels and is hacky. Ideally we could have the db
+            //  config specify eager loading on this property, keep the context alive longer,
+            //  or possibly change the schema to avoid infinite recursion.
+            return _employeeContext.Employees.Include(r => r.DirectReports)
+                .ThenInclude(r => r.DirectReports).ThenInclude(r => r.DirectReports)
+                .SingleOrDefault(e => e.EmployeeId == id);
         }
 
         public Task SaveAsync()

@@ -58,5 +58,22 @@ namespace CodeChallenge.Controllers
 
             return Ok(newEmployee);
         }
+
+        // Opted to create this endpoint under the employee resource and controller rather than giving it its own
+        //   since it's not a persisted data structure and is 1-1 tied to Employee
+        [HttpGet("{id}/reporting-structure")]
+        public IActionResult GetReportingStructureByEmployeeId(String id)
+        {
+            _logger.LogDebug($"Received reporting structure get request for employee '{id}'");
+
+            var reportingStructure = _employeeService.GetReportingStructureByEmployeeId(id);
+
+            if (reportingStructure == null)
+                return NotFound();
+
+            return Ok(reportingStructure);
+        }
+
     }
 }
+
