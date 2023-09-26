@@ -24,6 +24,7 @@ namespace CodeChallenge.Repositories
             _employeeContext.Compensations.Add(comp);
             return comp;
         }
+
         /// <summary>
         /// Returns the most recent Compensation by EffectiveDate, excluding future dates
         /// </summary>
